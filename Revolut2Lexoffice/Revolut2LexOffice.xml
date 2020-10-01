@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Api</name>
+    </assembly>
+    <members>
+        <member name="M:Revolut2LexOffice.Controllers.ConvertController.PostAsync(Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            Upload a RevolutCsv file to convert it to a a LexOffice csv file.
+            </summary>
+            <param name="file"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Revolut2LexOffice.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            This method gets called by the runtime. Use this method to add services to the container.
+            </summary>
+            <param name="services"></param>
+        </member>
+    </members>
+</doc>
