@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Revolut2LexOffice
@@ -13,7 +14,11 @@ namespace Revolut2LexOffice
 
 		public IEnumerable<IField> Fields()
 		{
-			yield return new Field(record.Reference);
+			yield return new Field(
+				String.IsNullOrWhiteSpace(record.Reference)
+					? "n/a"
+					: record.Reference
+			);
 		}
 	}
 }
