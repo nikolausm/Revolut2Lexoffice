@@ -37,15 +37,4 @@ public struct LexOfficeRecord : ILexOfficeRecord
 	public string SollBetragAusgabe { get; }
 	public string HabenBetragEinnahme { get; }
 	public string ZusatzInfo { get; }
-
-	public string ToCsv()
-	=> String.Join(
-		",",
-		new string[]
-		{
-			WertStellungsDatum,
-			BuchungsDatum
-		}
-	);
-
 }
