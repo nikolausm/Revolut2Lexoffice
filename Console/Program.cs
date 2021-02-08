@@ -2,6 +2,7 @@
 using Console.Extensions.Configuration;
 using CsvHelper;
 using CsvHelper.Configuration;
+using Domain;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Revolut2LexOffice;
@@ -74,7 +75,9 @@ namespace Console
 						{
 							targetFile.Write(
 								System.Text.Encoding.ASCII.GetBytes(
-									new LexOfficeRecordFromRevolutRecord(settings, record).ToString()
+									new LexOfficeCsvLine(
+										new LexOfficeRecordFromRevolutRecord(settings, record)
+									).ToString()
 								)
 							);
 						}
