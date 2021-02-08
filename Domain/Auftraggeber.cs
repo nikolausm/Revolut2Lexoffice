@@ -1,3 +1,4 @@
+using Domain.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,31 +7,32 @@ namespace Revolut2LexOffice
 {
 	internal class Auftraggeber : ITarget
 	{
-		public readonly IReadOnlyList<string> FromIdentifier = new List<string> { "From ", "Refund from ", "Payment from ", "Zahlung von ", "Gutschrift von " };
 
-		private IRevolutRecord record;
+		private IRevolutRecord _record;
+		private readonly ISettings _settings;
 
-		public Auftraggeber(IRevolutRecord record)
+		public Auftraggeber(ISettings settings, IRevolutRecord record)
 		{
-			this.record = record;
+			_record = record;
+			_settings = settings;
 		}
 
 		public IEnumerable<IField> Fields()
 		{
-			string description = record.Description;
+			string description = _record.Description;
 
-			if (FromIdentifier.Any(identifer => description.StartsWith(identifer)))
+			if (_settings.FromIdentifier.Any(identifer => description.StartsWith(identifer)))
 			{
 				return new List<IField>{
 					new Field(
-						description.Substring(
-							FromIdentifier.First(identifer => description.StartsWith(identifer)).Length
+						description.RemovePrefix(
+							_settings.FromIdentifier
 						)
 					)
 				};
 			}
 
-			if (String.IsNullOrWhiteSpace(record.Payer))
+			if (String.IsNullOrWhiteSpace(_record.Payer))
 			{
 				return new List<IField>{
 					new Field("Revolut")
@@ -38,7 +40,7 @@ namespace Revolut2LexOffice
 			}
 
 			return new List<IField>{
-				new Field(record.Payer)
+				new Field(_record.Payer)
 			};
 		}
 	}

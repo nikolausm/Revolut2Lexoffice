@@ -1,3 +1,4 @@
+using Domain.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,29 +29,21 @@ namespace Revolut2LexOffice
 						yield return new Field("BIC", _settings.BIC);
 					}
 					break;
-
-				case "TRANSFER":
-					yield return new Field(
-						_record.Description.Substring("An ".Length)
-					);
-					break;
 				case "FEE":
 					{
 						yield return new Field("Revolut Business");
 					}
 					break;
+				case "TRANSFER":
 				case "CARD_PAYMENT":
 				default:
-					{
-						yield return new Field(_record.Description);
-					}
+					yield return new Field(
+						_record.Description.RemovePrefix(
+							_settings.ReceiverPrefixes.ToArray()
+						)
+					);
 					break;
 			}
-
-			yield return new Field("Account Number", _record.BeneficiaryAccountNumber);
-			yield return new Field("IBAN", _record.BeneficiaryIban);
-			yield return new Field("BIC", _record.BeneficiaryBic);
-			yield return new Field("Code/Number", _record.BeneficiarySortCodeOrRoutingNumber);
 		}
 	}
 }

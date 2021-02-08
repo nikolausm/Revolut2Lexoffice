@@ -14,11 +14,22 @@ namespace Revolut2LexOffice
 
 		public IEnumerable<IField> Fields()
 		{
-			yield return new Field(
-				String.IsNullOrWhiteSpace(record.Reference)
-					? "n/a"
-					: record.Reference
-			);
+
+			switch (record.Type.ToUpper())
+			{
+				case "FEE":
+					yield return new Field(
+						record.Description
+					);
+					break;
+				default:
+					yield return new Field(
+						String.IsNullOrWhiteSpace(record.Reference)
+							? "n/a"
+							: record.Reference
+					);
+					break;
+			}
 		}
 	}
 }

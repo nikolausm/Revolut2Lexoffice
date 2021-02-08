@@ -26,18 +26,11 @@ namespace Revolut2LexOffice
 			(
 				wertStellungsDatum: record.DateCompletedUtc,
 				buchungsDatum: record.DateStartedUtc,
-				auftraggeber: FieldsToString(new Auftraggeber(record).Fields()),
+				auftraggeber: FieldsToString(new Auftraggeber(settings, record).Fields()),
 				empfaenger: FieldsToString(new Empfaenger(settings, record).Fields()),
 				auftraggeberEmpfaenger: null,
 				verwendungszweck: FieldsToString(new Verwendungszweck(record).Fields()),
-				zusatzInfo: FieldsToString(
-					new List<Field>
-					{
-						new Field("Account", record.Account),
-						new Field("State", record.State),
-						new Field("Code", record.BeneficiarySortCodeOrRoutingNumber),
-					}
-				),
+				zusatzInfo: record.ToString(),
 				betrag: record.Amount,
 				sollBetragAusgabe: !record.Amount.StartsWith("-") ? null : record.OrigAmount,
 				habenBetragEinnahme: record.Amount.StartsWith("-") ? null : record.OrigAmount

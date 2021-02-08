@@ -3,6 +3,7 @@ using Console.Extensions.Configuration;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Domain;
+using Domain.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Revolut2LexOffice;
@@ -31,9 +32,7 @@ namespace Console
 				? FileFromConsoleInput()
 				: args[0];
 
-			string targetFileName = (args.Length > 1)
-				? fileName
-					: fileName.Substring(0, fileName.LastIndexOf('.')).Append(".converted.csv");
+			string targetFileName = TargetFileName(args, fileName);
 
 			Configuration = new ConfigurationBuilder()
 				.AddJsonFile("appsettings.json")
@@ -55,6 +54,26 @@ namespace Console
 			WriteConvertedFile(config, fileName, settings, targetFileName);
 		}
 
+		private static string TargetFileName(string[] args, string sourceFile)
+		{
+			var index = 1;
+			var target = (args.Length > 1)
+				? args[1]
+				: sourceFile;
+
+			var currentTarget = target;
+			while (File.Exists(currentTarget))
+			{
+				currentTarget = AppendConverted(target, index++);
+			}
+			return currentTarget;
+		}
+
+		private static string AppendConverted(string fileName, int index)
+		{
+			return fileName.Substring(0, fileName.LastIndexOf('.')).With($".converted{index:D3}.csv");
+		}
+
 		private static void WriteConvertedFile(CsvConfiguration config, string fileName, Settings settings, string targetFileName)
 		{
 			var file = File.OpenRead(fileName);
@@ -67,17 +86,17 @@ namespace Console
 				using (var targetFile = System.IO.File.Create(targetFileName))
 				{
 
-					using (var reader = new StreamReader(file))
+					using (var reader = new StreamReader(file, true))
 					using (var csv = new CsvReader(reader, config))
 					{
 						var result = csv.GetRecords<RevolutRecord>();
 						foreach (var record in result)
 						{
 							targetFile.Write(
-								System.Text.Encoding.ASCII.GetBytes(
+								System.Text.Encoding.UTF8.GetBytes(
 									new LexOfficeCsvLine(
 										new LexOfficeRecordFromRevolutRecord(settings, record)
-									).ToString()
+									).ToString() + "\r\n"
 								)
 							);
 						}
