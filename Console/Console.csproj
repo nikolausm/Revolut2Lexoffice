@@ -44,13 +44,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Resource Include="Minicon_jan_1_jan_31.csv" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Update="Minicon_jan_1_jan_31.csv">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
 	</ItemGroup>
 
 </Project>

@@ -9,15 +9,11 @@ namespace Domain
 
 			var result = new StringBuilder();
 			result.Append($"DateStartedUtc: \"{DateStartedUtc}\"");
-			result.Append($", TimeStartedUtc: \"{TimeStartedUtc}\"");
 			result.Append($", DateCompletedUtc: \"{DateCompletedUtc}\"");
-			result.Append($", TimeCompletedUtc: \"{TimeCompletedUtc}\"");
-			result.Append($", State: \"{State}\"");
 			result.Append($", Type: \"{Type}\"");
 			result.Append($", Description: \"{Description}\"");
 			result.Append($", Reference: \"{Reference}\"");
 			result.Append($", Payer: \"{Payer}\"");
-			result.Append($", CardName: \"{CardName}\"");
 			result.Append($", CardNumber: \"{CardNumber}\"");
 			result.Append($", OrigCurrency: \"{OrigCurrency}\"");
 			result.Append($", OrigAmount: \"{OrigAmount}\"");
@@ -35,15 +31,11 @@ namespace Domain
 
 		}
 		public string DateStartedUtc { get; set; }
-		public string TimeStartedUtc { get; set; }
 		public string DateCompletedUtc { get; set; }
-		public string TimeCompletedUtc { get; set; }
-		public string State { get; set; }
 		public string Type { get; set; }
 		public string Description { get; set; }
 		public string Reference { get; set; }
 		public string Payer { get; set; }
-		public string CardName { get; set; }
 		public string CardNumber { get; set; }
 		public string OrigCurrency { get; set; }
 		public string OrigAmount { get; set; }
