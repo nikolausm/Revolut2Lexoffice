@@ -8,6 +8,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using Azure.Core;
 
 namespace Revolut2LexOffice
 {
@@ -73,7 +76,25 @@ namespace Revolut2LexOffice
 			);
 
 			app.UseRouting();
+			
+			var client = new SecretClient(
+				new Uri("https://revolut2lexoffice.vault.azure.net/"),
+				new DefaultAzureCredential(),
+				new SecretClientOptions()
+				{
+					Retry =
+					{
+						Delay= TimeSpan.FromSeconds(2),
+						MaxDelay = TimeSpan.FromSeconds(16),
+						MaxRetries = 5,
+						Mode = RetryMode.Exponential
+					}
+				}
+			);
 
+			KeyVaultSecret secret = client.GetSecret("PrivateAccountSettings");
+			
+			
 			app.UseEndpoints(
 				endpoints =>
 				{

@@ -10,6 +10,7 @@ using Revolut2LexOffice;
 using System;
 using System.Globalization;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace Console
 {
@@ -39,8 +40,9 @@ namespace Console
 				.AddUserSecrets<Program>()
 				.Build();
 
-			var settings = Configuration.GetSection("PrivateAccountSettings").Get<Settings>();
-
+			var stringSettings = "{\"Owner\": \"Michael Nikolaus (Minicon, IT Consulting)\", \"IBAN\": \"LT06 3250 0951 3701 0201\", \"BIC\": \"REVOLT21\" }";
+			var settings = JsonConvert.DeserializeObject<Settings>(stringSettings); //Configuration.GetSection("PrivateAccountSettings").Get<Settings>();
+			
 			if (!File.Exists(fileName))
 			{
 				throw new FileNotFoundException(fileName);

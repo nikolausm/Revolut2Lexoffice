@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Domain;
@@ -25,6 +26,11 @@ namespace Revolut2LexOffice.Controllers
 		{
 			_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 			_configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+		}
+		[HttpGet]
+		public string Get()
+		{
+			return "Works";
 		}
 
 		/// <summary>

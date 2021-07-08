@@ -1,6 +1,16 @@
+using System;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using Azure.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using Azure.Core;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
+using Azure.Identity;
+
 
 namespace Revolut2LexOffice
 {
@@ -18,6 +28,15 @@ namespace Revolut2LexOffice
 				if (hostContext.HostingEnvironment.IsDevelopment())
 				{
 					builder.AddUserSecrets("Revolut2LexOffice");
+				}
+				
+				if (hostContext.HostingEnvironment.IsProduction())
+				{
+					builder.AddAzureKeyVault(
+						new Uri($"https://revolut2lexoffice.vault.azure.net/"),
+						new EnvironmentCredential(),
+						new KeyVaultSecretManager()
+					);
 				}
 			}
 		).ConfigureWebHostDefaults(
