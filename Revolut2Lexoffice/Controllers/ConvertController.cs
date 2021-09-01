@@ -20,9 +20,9 @@ namespace Revolut2LexOffice.Controllers
 	public class ConvertController : ControllerBase
 	{
 		private readonly ILogger<ConvertController> _logger;
-		private readonly IConfiguration _configuration;
+		private readonly ISettings _configuration;
 
-		public ConvertController(ILogger<ConvertController> logger, IConfiguration configuration)
+		public ConvertController(ILogger<ConvertController> logger, ISettings configuration)
 		{
 			_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 			_configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
@@ -48,7 +48,7 @@ namespace Revolut2LexOffice.Controllers
 					"\r\n",
 					LexOfficeRecords(
 						file,
-						(ISettings) Newtonsoft.Json.JsonConvert.DeserializeObject<Settings>(_configuration["PrivateAccountSettings"])
+						_configuration
 					).Select(row => new LexOfficeCsvLine(row).ToString())
 				)
 			),

@@ -40,9 +40,6 @@ namespace Console
 				.AddUserSecrets<Program>()
 				.Build();
 
-			var stringSettings = "{\"Owner\": \"Michael Nikolaus (Minicon, IT Consulting)\", \"IBAN\": \"LT06 3250 0951 3701 0201\", \"BIC\": \"REVOLT21\" }";
-			var settings = JsonConvert.DeserializeObject<Settings>(stringSettings); //Configuration.GetSection("PrivateAccountSettings").Get<Settings>();
-			
 			if (!File.Exists(fileName))
 			{
 				throw new FileNotFoundException(fileName);
@@ -53,7 +50,16 @@ namespace Console
 				throw new FileAlreadyExists(targetFileName);
 			}
 
-			WriteConvertedFile(config, fileName, settings, targetFileName);
+			WriteConvertedFile(
+				config,
+				fileName,
+				new Settings(
+					"Michael Nikolaus IT Consulting",
+					"LT06 3250 0951 3701 0201",
+					"REVOLT21"
+				),
+				targetFileName
+			);
 		}
 
 		private static string TargetFileName(string[] args, string sourceFile)
