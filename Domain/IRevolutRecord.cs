@@ -1,6 +1,6 @@
 public interface IRevolutRecord
 {
-	string DateStartedUtc { get; set; }
+	string? DateStartedUtc { get; set; }
 	string DateCompletedUtc { get; set; }
 	string Type { get; set; }
 	string Description { get; set; }
