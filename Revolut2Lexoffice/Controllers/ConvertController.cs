@@ -43,7 +43,7 @@ namespace Revolut2LexOffice.Controllers
 		[HttpPost]
 		public FileResult PostAsync(IFormFile file)
 		=> File(
-			new System.Text.ASCIIEncoding().GetBytes(
+			new System.Text.UTF8Encoding().GetBytes(
 				String.Join(
 					"\r\n",
 					LexOfficeRecords(
@@ -52,7 +52,8 @@ namespace Revolut2LexOffice.Controllers
 					).Select(row => new LexOfficeCsvLine(row).ToString())
 				)
 			),
-			"text/csv"
+			"text/csv",
+			"ConvertedForLexOffice_" + DateTime.UtcNow.ToString("yyyyMMddHHmm") + ".csv"
 		);
 
 		
