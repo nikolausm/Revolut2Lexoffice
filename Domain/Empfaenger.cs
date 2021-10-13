@@ -1,10 +1,12 @@
+using Domain.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Revolut2LexOffice
 {
-	internal class Empfaenger: ITarget
+	internal class Empfaenger : ITarget
 	{
 		private readonly ISettings _settings;
 		private readonly IRevolutRecord _record;
@@ -17,47 +19,31 @@ namespace Revolut2LexOffice
 
 		public IEnumerable<IField> Fields()
 		{
-			var fields = new List<Field>();
-			if (_record.Description.StartsWith("To ")){
-				fields.Add(new Field(_record.Description.Substring("To ".Length)));
-			}
-
-			if (_record.Description.StartsWith("Payment from ")){
-				fields.Add(new Field(_settings.Owner));
-				fields.Add(new Field("IBAN", _settings.IBAN));
-				fields.Add(new Field("BIC", _settings.BIC));
-			}
-
-			if (_record.Type == "Fee"){
-				return new List<IField>
-				{
-					new Field("Revolut Business")
-				};
-			}
-
-			if (String.IsNullOrWhiteSpace(_record.BeneficiaryAccountNumber)
-				&& String.IsNullOrWhiteSpace(_record.BeneficiaryIban)
-				&& String.IsNullOrWhiteSpace(_record.BeneficiaryBic)
-				&& !String.IsNullOrWhiteSpace(_record.Description)
-				&& !_record.Description?.StartsWith("To ") == true
-				&& !_record.Description?.StartsWith("Payment from ") == true
-				&& String.IsNullOrWhiteSpace(_record.BeneficiarySortCodeOrRoutingNumber)
-			)
+			switch (_record.Type.ToUpper())
 			{
-				
-				fields.Add(new Field(_record.Description));
-				return fields;
+				case "CARD_REFUND":
+				case "TOPUP":
+					{
+						yield return new Field(_settings.Owner);
+						yield return new Field("IBAN", _settings.IBAN);
+						yield return new Field("BIC", _settings.BIC);
+					}
+					break;
+				case "FEE":
+					{
+						yield return new Field("Revolut Business");
+					}
+					break;
+				case "TRANSFER":
+				case "CARD_PAYMENT":
+				default:
+					yield return new Field(
+						_record.Description.RemovePrefix(
+							_settings.ReceiverPrefixes.ToArray()
+						)
+					);
+					break;
 			}
-
-			return fields.Union(
-				new List<Field>
-				{
-					new Field("Account Number", _record.BeneficiaryAccountNumber),
-					new Field("IBAN", _record.BeneficiaryIban),
-					new Field("BIC", _record.BeneficiaryBic),
-					new Field("Code/Number", _record.BeneficiarySortCodeOrRoutingNumber),
-				}
-			);
 		}
 	}
 }

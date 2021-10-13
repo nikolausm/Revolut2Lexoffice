@@ -1,15 +1,11 @@
 public interface IRevolutRecord
 {
-	string DateStartedUtc { get; set; }
-	string TimeStartedUtc { get; set; }
+	string? DateStartedUtc { get; set; }
 	string DateCompletedUtc { get; set; }
-	string TimeCompletedUtc { get; set; }
-	string State { get; set; }
 	string Type { get; set; }
 	string Description { get; set; }
 	string Reference { get; set; }
 	string Payer { get; set; }
-	string CardName { get; set; }
 	string CardNumber { get; set; }
 	string OrigCurrency { get; set; }
 	string OrigAmount { get; set; }

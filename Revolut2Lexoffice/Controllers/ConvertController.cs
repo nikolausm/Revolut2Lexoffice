@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Domain;
@@ -19,12 +20,18 @@ namespace Revolut2LexOffice.Controllers
 	public class ConvertController : ControllerBase
 	{
 		private readonly ILogger<ConvertController> _logger;
-		private readonly IConfiguration _configuration;
+		private readonly ISettings _configuration;
 
-		public ConvertController(ILogger<ConvertController> logger, IConfiguration configuration)
+		public ConvertController(ILogger<ConvertController> logger, ISettings configuration)
 		{
 			_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 			_configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+		}
+
+		[HttpGet]
+		public string Get()
+		{
+			return "Works";
 		}
 
 		/// <summary>
@@ -36,23 +43,23 @@ namespace Revolut2LexOffice.Controllers
 		[Produces("text/csv")]
 		[HttpPost]
 		public FileResult PostAsync(IFormFile file)
-		=> File(
-			new System.Text.ASCIIEncoding().GetBytes(
-				String.Join(
-					"\r\n",
-					LexOfficeRecords(
-						file,
-						(ISettings) Newtonsoft.Json.JsonConvert.DeserializeObject<Settings>(_configuration["PrivateAccountSettings"])
-					).Select(row => new LexOfficeCsvLine(row).ToString())
-				)
-			),
-			"text/csv"
-		);
+			=> File(
+				new System.Text.UTF8Encoding().GetBytes(
+					String.Join(
+						"\r\n",
+						LexOfficeRecords(
+							file,
+							_configuration
+						).Select(row => new LexOfficeCsvLine(row).ToString())
+					)
+				),
+				"text/csv",
+				"ConvertedForLexOffice_" + DateTime.UtcNow.ToString("yyyyMMddHHmm") + ".csv"
+			);
 
-		
+
 		private IEnumerable<ILexOfficeRecord> LexOfficeRecords(IFormFile file, ISettings settings)
 		{
-
 			var config = new CsvConfiguration(CultureInfo.DefaultThreadCurrentCulture)
 			{
 				Delimiter = ",",
@@ -62,25 +69,23 @@ namespace Revolut2LexOffice.Controllers
 
 			config.RegisterClassMap(new RevolutMap());
 
-			if (file.Length > 0)
+			if (file.Length <= 0)
 			{
-				var filePath = Path.GetTempFileName();
-
-				using (var stream = System.IO.File.Create(filePath))
-				{
-
-					using (var reader = new StreamReader(file.OpenReadStream()))
-					using (var csv = new CsvReader(reader, config))
-					{
-						var result = csv.GetRecords<RevolutRecord>();
-						foreach (var record in result)
-						{
-							yield return new LexOfficeRecordFromRevolutRecord(settings, record);
-						}
-					}
-				}
+				yield break;
 			}
 
+			var filePath = Path.GetTempFileName();
+
+			using (var stream = System.IO.File.Create(filePath))
+			{
+				using var reader = new StreamReader(file.OpenReadStream());
+				using var csv = new CsvReader(reader, config);
+				var result = csv.GetRecords<RevolutRecord>();
+				foreach (var record in result)
+				{
+					yield return new LexOfficeRecordFromRevolutRecord(settings, record);
+				}
+			}
 		}
 	}
 }

@@ -6,20 +6,20 @@ namespace Domain
 	public class LexOfficeCsvLine
 	{
 		private readonly ILexOfficeRecord _lexOfficeRecord;
-		private readonly char separator;
-		private readonly string quotationMark;
+		private readonly char _separator;
+		private readonly string _quotationMark;
 
 		public LexOfficeCsvLine(ILexOfficeRecord lexOfficeRecord, char separator = ',', string quotations = "\"")
 		{
 			_lexOfficeRecord = lexOfficeRecord;
-			this.separator = separator;
-			this.quotationMark = quotations;
+			_separator = separator;
+			_quotationMark = quotations;
 		}
 
 		public override string ToString()
 		{
 			return String.Join(
-				separator,
+				_separator,
 				new[]
 				{
 					_lexOfficeRecord.WertStellungsDatum,
@@ -30,8 +30,8 @@ namespace Domain
 					_lexOfficeRecord.Betrag,
 					_lexOfficeRecord.ZusatzInfo
 				}.ToList()
-					.Select(e => e.Replace(quotationMark, quotationMark + quotationMark))
-					.Select(e => quotationMark + e + quotationMark)
+					.Select(e => e.Replace(_quotationMark, _quotationMark + _quotationMark))
+					.Select(e => _quotationMark + e + _quotationMark)
 			);
 		}
 	}

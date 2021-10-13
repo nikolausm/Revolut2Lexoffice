@@ -7,11 +7,11 @@ public struct LexOfficeRecord : ILexOfficeRecord
 		string buchungsDatum,
 		string auftraggeber,
 		string empfaenger,
-		string auftraggeberEmpfaenger,
+		string? auftraggeberEmpfaenger,
 		string verwendungszweck,
 		string betrag,
-		string sollBetragAusgabe,
-		string habenBetragEinnahme,
+		string? sollBetragAusgabe,
+		string? habenBetragEinnahme,
 		string zusatzInfo
 	)
 	{
@@ -31,21 +31,10 @@ public struct LexOfficeRecord : ILexOfficeRecord
 	public string BuchungsDatum { get; }
 	public string Auftraggeber { get; }
 	public string Empfaenger { get; }
-	public string AuftraggeberEmpfaenger { get; }
+	public string? AuftraggeberEmpfaenger { get; }
 	public string Verwendungszweck { get; }
 	public string Betrag { get; }
-	public string SollBetragAusgabe { get; }
-	public string HabenBetragEinnahme { get; }
+	public string? SollBetragAusgabe { get; }
+	public string? HabenBetragEinnahme { get; }
 	public string ZusatzInfo { get; }
-
-	public string ToCsv()
-	=> String.Join(
-		",",
-		new string[]
-		{
-			WertStellungsDatum,
-			BuchungsDatum
-		}
-	);
-
 }
